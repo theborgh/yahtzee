@@ -5,6 +5,7 @@ class Die extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.numberStrings = ['one', 'two', 'three', 'four', 'five', 'six'];
   }
 
   handleClick() {
@@ -12,14 +13,21 @@ class Die extends Component {
   }
 
   render() {
+    // putting numberStrings here would recreate the array every time! Performance hit
+    let classes = `Die fas fa-dice-${
+      this.numberStrings[this.props.val - 1]
+    } fa-5x `;
+
+    if (this.props.locked) {
+      classes += 'Die-locked';
+    }
+
     return (
-      <button
-        className={'Die'}
-        style={{backgroundColor: this.props.locked ? 'grey' : 'black'}}
+      <i
+        className={classes}
         onClick={this.handleClick} // an inline arrow function would create a new function each time the component is rendered!!
-      >
-        {this.props.val}
-      </button>
+        disabled={this.props.disabled}
+      ></i>
     );
   }
 }
