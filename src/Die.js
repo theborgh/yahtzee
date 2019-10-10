@@ -6,6 +6,7 @@ class Die extends Component {
     super(props);
     this.handleClick = this.handleClick.bind(this);
     this.numberStrings = ['one', 'two', 'three', 'four', 'five', 'six'];
+    this.val = 1;
   }
 
   handleClick() {
@@ -19,7 +20,11 @@ class Die extends Component {
     } fa-5x `;
 
     if (this.props.locked) {
-      classes += 'Die-locked';
+      classes += 'Die-locked ';
+    }
+
+    if (this.props.rolling) {
+      classes += 'Die-rolling';
     }
 
     return (

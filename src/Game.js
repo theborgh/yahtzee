@@ -13,6 +13,7 @@ class Game extends Component {
       dice: Array.from({length: NUM_DICE}),
       locked: Array(NUM_DICE).fill(false),
       rollsLeft: NUM_ROLLS,
+      rolling: false,
       scores: {
         ones: undefined,
         twos: undefined,
@@ -32,6 +33,16 @@ class Game extends Component {
     this.roll = this.roll.bind(this);
     this.doScore = this.doScore.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
+    this.animateRoll = this.animateRoll.bind(this);
+  }
+
+  animateRoll() {
+    this.setState(
+      {
+        rolling: true,
+      },
+      () => setTimeout(this.roll, 1000)
+    );
   }
 
   roll(evt) {
@@ -42,13 +53,14 @@ class Game extends Component {
       ),
       locked: st.rollsLeft > 1 ? st.locked : Array(NUM_DICE).fill(true),
       rollsLeft: st.rollsLeft - 1,
+      rolling: false,
     }));
   }
 
   toggleLocked(idx) {
     // toggle whether idx is in locked or not
 
-    if (this.state.rollsLeft > 0) {
+    if (this.state.rollsLeft > 0 && !this.state.rolling) {
       this.setState(st => ({
         locked: [
           ...st.locked.slice(0, idx),
@@ -69,6 +81,10 @@ class Game extends Component {
     this.roll();
   }
 
+  componentDidMount() {
+    this.animateRoll();
+  }
+
   render() {
     return (
       <div className='Game'>
@@ -81,6 +97,7 @@ class Game extends Component {
               locked={this.state.locked}
               handleClick={this.toggleLocked}
               disabled={this.state.rollsLeft === 0}
+              rolling={this.state.rolling}
             />
             <div className='Game-button-wrapper'>
               <button
@@ -88,7 +105,7 @@ class Game extends Component {
                 disabled={
                   this.state.locked.every(x => x) || this.state.rollsLeft === 0
                 }
-                onClick={this.roll}
+                onClick={this.animateRoll}
               >
                 {this.state.rollsLeft} Rerolls Left
               </button>
